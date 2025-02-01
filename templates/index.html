@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Bridge Collapse Prediction{% endblock %}
+
+{% block content %}
+<h1>Welcome to the Bridge Collapse Prediction App</h1>
+<p>Use this tool to predict bridge collapse status based on key parameters.</p>
+
+<!-- Form for data entry -->
+<form action="{{ url_for('predict') }}" method="POST">
+    <div class="form-container">
+        <div class="form-row">
+            <div class="form-item">
+                <label for="Material">Material:</label>
+                <select id="Material" name="Material">
+                    <option value="0">Steel</option>
+                    <option value="1">Concrete</option>
+                    <option value="2">Wood</option>
+                </select>
+            </div>
+
+            <div class="form-item">
+                <label for="Weather_Conditions">Weather Conditions:</label>
+                <select id="Weather_Conditions" name="Weather_Conditions">
+                    <option value="0">Sunny</option>
+                    <option value="1">Windy</option>
+                    <option value="2">Rainy</option>
+                    <option value="3">Cloudy</option>
+                    <option value="4">Snowy</option>
+                </select>
+            </div>
+
+            <div class="form-item">
+                <label for="Construction_Quality">Construction Quality:</label>
+                <select id="Construction_Quality" name="Construction_Quality">
+                    <option value="0">Bad</option>
+                    <option value="1">Good</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-item">
+                <label for="Bridge_Design">Bridge Design:</label>
+                <select id="Bridge_Design" name="Bridge_Design">
+                    <option value="0">Arch</option>
+                    <option value="1">Beam</option>
+                    <option value="2">Truss</option>
+                </select>
+            </div>
+
+            <div class="form-item">
+                <label for="Length">Length (m):</label>
+                <input type="number" id="Length" name="Length (m)" required>
+            </div>
+
+            <div class="form-item">
+                <label for="Age">Age (years):</label>
+                <input type="number" id="Age" name="Age (years)" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-item">
+                <label for="Traffic_Volume">Traffic Volume (vehicles/day):</label>
+                <input type="number" id="Traffic_Volume" name="Traffic_Volume (vehicles/day)" required>
+            </div>
+
+            <div class="form-item">
+                <label for="Width">Width (m):</label>
+                <input type="number" id="Width" name="Width (m)" required>
+            </div>
+
+            <div class="form-item">
+                <label for="Height">Height (m):</label>
+                <input type="number" id="Height" name="Height (m)" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-item">
+                <label for="Water_Flow_Rate">Water Flow Rate (m³/s):</label>
+                <input type="number" id="Water_Flow_Rate" name="Water_Flow_Rate (m³/s)" required>
+            </div>
+
+            <div class="form-item">
+                <label for="Stress">Stress (MPa):</label>
+                <input type="number" id="Stress" name="Stress (MPa)" required>
+            </div>
+
+            <div class="form-item">
+                <label for="Strain">Strain (%):</label>
+                <input type="number" id="Strain" name="Strain (%)" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-item">
+                <label for="Tensile_Strength">Tensile Strength (MPa):</label>
+                <input type="number" id="Tensile_Strength" name="Tensile_Strength (MPa)" required>
+            </div>
+
+            <div class="form-item">
+                <label for="Rainfall">Rainfall (mm):</label>
+                <input type="number" id="Rainfall" name="Rainfall (mm)" required>
+            </div>
+
+            <div class="form-item">
+                <label for="Temperature">Temperature (°C):</label>
+                <input type="number" id="Temperature" name="Temperature (°C)" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-item">
+                <label for="Humidity">Humidity (%):</label>
+                <input type="number" id="Humidity" name="Humidity (%)" required>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Predict</button>
+        <h2>{{ prediction_text }}</h2>
+
+    </div>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style1.css') }}" />
+</form>
+
+{% endblock %}

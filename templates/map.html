@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}Map - Bridge Collapse Prediction{% endblock %}
+
+{% block content %}
+
+    <div id="route-box">
+        <label for="source">Enter Starting Point:</label>
+        <input type="text" id="source" placeholder="Enter source location...">
+        <button onclick="getSourceCoordinates()">Set Source</button>
+        <button onclick="useGPSForSource()">Use GPS</button>
+
+        <label for="destination">Enter Destination:</label>
+        <input type="text" id="destination" placeholder="Enter destination...">
+        <button onclick="getDestinationCoordinates()">Find Route</button>
+    </div>
+
+    <!-- Full-page container for the map -->
+    <div id="map"></div>
+
+    <!-- Leaflet.js and Routing Machine -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+
+    <script>
+        var map = L.map('map').setView([20.5937, 78.9629], 5);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        var routingControl;
+        var sourceMarker, destinationMarker;
+        var sourceLat, sourceLng;
+
+        var standingIcon = L.divIcon({className: 'standing-icon', html: '✔', iconSize: [30, 30]});
+        var collapsedIcon = L.divIcon({className: 'collapsed-icon', html: '✖', iconSize: [30, 30]});
+        var unidentifiedIcon = L.divIcon({className: 'unidentified-icon', html: '?', iconSize: [30, 30]});
+
+        function getSourceCoordinates() {
+            const source = document.getElementById('source').value;
+            if (!source) {
+                alert("Please enter a source location.");
+                return;
+            }
+
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${source}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        sourceLat = parseFloat(data[0].lat);
+                        sourceLng = parseFloat(data[0].lon);
+
+                        if (sourceMarker) {
+                            map.removeLayer(sourceMarker);
+                        }
+
+                        sourceMarker = L.marker([sourceLat, sourceLng]).addTo(map)
+                            .bindPopup(`<b>${source}</b>`).openPopup();
+
+                        map.setView([sourceLat, sourceLng], 12);
+                    } else {
+                        alert("Source location not found. Please try again.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching source coordinates:", error);
+                    alert("Failed to fetch source coordinates.");
+                });
+        }
+
+        function useGPSForSource() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    sourceLat = position.coords.latitude;
+                    sourceLng = position.coords.longitude;
+
+                    if (sourceMarker) {
+                        map.removeLayer(sourceMarker);
+                    }
+
+                    sourceMarker = L.marker([sourceLat, sourceLng]).addTo(map)
+                        .bindPopup('<b>Your Current Location</b>').openPopup();
+
+                    map.setView([sourceLat, sourceLng], 12);
+                });
+            } else {
+                alert('Geolocation is not supported by this browser.');
+            }
+        }
+
+        function getDestinationCoordinates() {
+            const destination = document.getElementById('destination').value;
+            if (!destination) {
+                alert("Please enter a destination.");
+                return;
+            }
+
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${destination}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        const destinationLat = parseFloat(data[0].lat);
+                        const destinationLng = parseFloat(data[0].lon);
+
+                        if (destinationMarker) {
+                            map.removeLayer(destinationMarker);
+                        }
+
+                        destinationMarker = L.marker([destinationLat, destinationLng]).addTo(map)
+                            .bindPopup(`<b>${destination}</b>`).openPopup();
+
+                        plotRoute(destinationLat, destinationLng);
+                    } else {
+                        alert("Destination not found. Please try again.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching destination coordinates:", error);
+                    alert("Failed to fetch destination coordinates.");
+                });
+        }
+
+        function plotRoute(destinationLat, destinationLng) {
+            if (!sourceLat || !sourceLng) {
+                alert("Please set the starting point first.");
+                return;
+            }
+
+            if (routingControl) {
+                map.removeControl(routingControl);
+            }
+
+            routingControl = L.Routing.control({
+                waypoints: [
+                    L.latLng(sourceLat, sourceLng),
+                    L.latLng(destinationLat, destinationLng)
+                ],
+                routeWhileDragging: true,
+                showAlternatives: true
+            }).addTo(map);
+
+            loadBridgesAndRoute(sourceLat, sourceLng, destinationLat, destinationLng);
+        }
+
+        function loadBridgesAndRoute(userLat, userLng, destinationLat, destinationLng) {
+            fetch('/get_bridges')
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(bridge => {
+                        let icon;
+                        const distanceToStart = getDistance(userLat, userLng, bridge.lat, bridge.lng);
+                        const distanceToEnd = getDistance(destinationLat, destinationLng, bridge.lat, bridge.lng);
+
+                        if (distanceToStart <= 1 || distanceToEnd <= 1) {
+                            if (bridge.status === 'Standing') {
+                                icon = standingIcon;
+                            } else if (bridge.status === 'Collapsed') {
+                                icon = collapsedIcon;
+                            } else {
+                                icon = unidentifiedIcon;
+                            }
+
+                            L.marker([bridge.lat, bridge.lng], { icon: icon })
+                                .bindPopup(`Bridge Status: ${bridge.status}`)
+                                .addTo(map);
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching bridges:", error);
+                });
+        }
+
+        function getDistance(lat1, lng1, lat2, lng2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLng = (lng2 - lng1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+    </script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+{% endblock %}

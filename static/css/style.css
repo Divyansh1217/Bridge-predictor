@@ -1,0 +1,369 @@
+/* General Content Styling */
+.content {
+    padding-top: 50px; /* Adjust based on navbar height */
+    color: rgb(0, 0, 0);
+    margin: 20px; /* style.css */
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 40px; /* Increased space between each row */
+        max-width: 1000px;
+        margin: 40px auto; /* Center the form */
+        background-color: rgba(12, 12, 12, 0.1); /* Light background for form */
+        padding: 50px;
+        border-radius: 40px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 3 columns per row */
+        gap: 50px; /* Increased space between the form fields */
+    }
+
+    .form-item {
+        display: flex;
+        flex-direction: column;
+        gap: 5px; /* Increased gap */
+        color: #ffffff;
+    }
+
+    
+
+    input, select {
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #fff;
+        font-size: 16px;
+        width: 100%; /* Make inputs full width of their container */
+        transition: all 0.3s ease; /* Smooth transition on focus */
+    }
+
+    input:focus, select:focus {
+        border-color: #4CAF50; /* Green border on focus */
+        outline: none;
+        box-shadow: 0 0 5px rgba(76, 175, 80, 0.6); /* Glow effect */
+    }
+
+    button {
+        align-self: flex-start; /* Align the button to the left */
+        padding: 12px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    border-radius: 8px;
+    padding: 20px;
+}
+
+/* Container Styling */
+.container {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 40px;
+    border-radius: 50px;
+    width: 500px;
+    text-align: center;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+    margin-bottom: 40px; /* Added margin to add more space between box and other elements */
+}
+
+/* Heading Styling */
+h1 {
+    margin-bottom: 50px;
+    font-size: 32px;
+    font-weight: 600;
+}
+
+/* Input & Button Styling */
+label, select, input, button {
+    display: block;
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 12px;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: rgb(0, 0, 0);
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Navbar Styling */
+body.light-mode .navbar, body.dark-mode .navbar {
+    z-index: 10;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1px 10px;
+    background-color:rgb(0, 0, 0, 0);
+    color: rgb(4, 4, 4);
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for navbar */
+}
+
+body.light-mode .navbar {
+    background-image: url("/static/images/4.jpg");
+}
+
+body.dark-mode .navbar {
+    background-image: url("/static/images/2.jpg");
+}
+
+/* Light Mode Styles */
+body.light-mode {
+    background-image: url("/static/images/1.JPG");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    font-family: Arial, sans-serif;
+    color: #000000;
+    margin: 0;
+    padding: 0;
+    label {
+        font-weight: bold;
+        color: #000000; /* Slightly lighter label color */
+    }
+}
+
+body.light-mode .content,
+body.light-mode .navbar,
+body.light-mode a {
+    color: #000000;
+}
+body.light-mode h1 {
+    color: #000000; /* Set heading color to black in light mode */
+}
+
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background-image: url("/static/images/3.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    font-family: Arial, sans-serif;
+    color: #747070;
+    margin: 0;
+    padding: 0;
+}
+
+body.dark-mode .content,
+body.dark-mode .navbar,
+body.dark-mode a {
+    color: #ffffff;
+}
+
+/* Navbar Links */
+.nav-links a {
+    text-decoration: none;
+    color: #fff;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+/* Toggle Button Styles */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 9px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 5px;
+    left: -15px;
+    right: 25px;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 35px;
+}
+
+.slider:before {
+    background-image: url('/static/images/sun.png');
+    background-size: 15px 18px;
+    background-position: center;
+    position: absolute;
+    content: "";
+    height: 21px;
+    width: 25px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #212121;
+}
+
+input:checked + .slider:before {
+    transform: translateX(30px);
+    background-color: gray;
+    background-image: url('/static/images/moon.png');
+}
+
+/* Map Styling */
+#map {
+    position: absolute; /* Position it relative to the viewport */
+    top: 50px; /* Start below the navbar (adjust if navbar height changes) */
+    left: 0;
+    right: 0;
+    bottom: 0; /* Extends to the bottom of the page */
+    z-index: 4;
+    height: calc(100vh - 50px); /* Subtract navbar height */
+    width: 100%; /* Full width */
+    color: #000000;
+}
+
+
+/* Marker Popup Styling */
+/* Open/Close Bar Styling */
+.popup-toggle-btn {
+    cursor: pointer;
+    background-color: #191845;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-bottom: 10px; /* Space between button and content */
+    text-align: center;
+}
+
+/* Popup Content Styling */
+.leaflet-popup-content {
+    font-size: 10px;
+    color: #000000;
+    display: none; /* Initially hidden */
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    max-height: 0;
+    overflow: hidden;
+}
+
+/* Expanded State for Popup */
+.leaflet-popup-content.show {
+    display: block;
+    max-height: 500px; /* Set an arbitrary max-height */
+    opacity: 1;
+}
+
+#route-box {
+    position: absolute;
+    margin-top: 80px;
+    padding: 15px; /* Adjusted padding */
+    width: 150px; /* Reduced width for consistency with destination box */
+    background-color: rgba(79, 80, 74, 0.9); /* Light background */
+    border-radius: 30px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column; /* Aligns elements vertically */
+    gap: 10px; /* Adds space between input and button */
+    z-index: 100;
+}
+
+#route-box label {
+    font-weight: bold;
+    color: #e1e0e0;
+}
+
+#route-box input {
+    width: 100%; /* Full width of the container */
+    padding: 5px;
+    top: 100px;
+    border: 1px  #ccc;
+    border-radius: 3px;
+}
+
+#route-box button {
+    padding: 5px 8px;
+    
+    background-color: #4f2b6f;
+    color: #c6c6c6;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    align-self: flex-end; /* Align button to the bottom */
+}
+
+#route-box button:hover {
+    background-color: #022a55;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#About_us {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column; /* Stack content vertically */
+    height: 20px; /* Full viewport height */
+    
+}
+#About_{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column; /* Stack content vertically */
+    height: 10px; /* Full viewport height */
+    padding: 30px 20%;
+
+}
+#About .box{
+    background-color: #333;
+
+}
+
+#About_us a {
+    margin-top: 70px; /* Add space below the content */
+    font-size: 20px;
+    text-decoration: none;
+    color: #007BFF;
+    padding: 30px 30px;
+    border: 4px solid #007BFF;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+#About_us a:hover {
+    color: white;
+    border-color: #45a049;
+}
+
+
+.un
